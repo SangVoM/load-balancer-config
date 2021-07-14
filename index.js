@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const port = "8000";
+const host = "0.0.0.0";
 
 const shell = require('shelljs');
 /**
@@ -19,9 +20,16 @@ app.post("/", (req, res) => {
     let result = null
     fs.readFile(fileHost, 'utf8', function (err,data) {
         if (err) return console.log(err);
-        if (flag) result = data.replace(ipReplace, '#no');
-         else result = data.replace(/#no/g , ipReplace + '\n #no');
-        console.log('result: ', result)
+        /** Delete ip server **/
+        if (flag) {
+            if (data.indexOf('#no') !== -1) {
+                result = data.replace(ipReplace , '');
+            } else {
+                result = data.replace(ipReplace, '#no');
+            }
+        } else { /** Add ip server **/
+            result = data.replace(/#no/g , ipReplace + '\n #no');
+        }
         fs.writeFile(fileHost, result, 'utf8', function (err) {
             if (err) return console.log(err);
             shell.exec("sudo /etc/init.d/nginx reload")
@@ -34,6 +42,6 @@ app.post("/", (req, res) => {
  * Server Activation
  */
 
-app.listen(port, () => {
-    console.log(`Listening to requests on http://localhost:${port}`);
+app.listen(port, host, () => {
+    console.log(`Listening to requests on http://${host}:${port}`);
 });
