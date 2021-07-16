@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const port = "8000";
-const host = "0.0.0.0";
+const host = "127.0.0.1";
 
 const shell = require('shelljs');
 /**
@@ -16,19 +16,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post("/", (req, res) => {
     const { IP, flag } = req.body;
     const fileHost = '/etc/nginx/conf.d/default.conf'
-    const ipReplace = `server ${IP};`
+    const ipTCP = `server ${IP}:3005;`
+    const ipUDP = `server ${IP}:60246;`
     let result = null
+
     fs.readFile(fileHost, 'utf8', function (err,data) {
         if (err) return console.log(err);
         /** Delete ip server **/
         if (flag) {
-            if (data.indexOf('#no') !== -1) {
-                result = data.replace(ipReplace , '');
+            if (data.indexOf('#tcp') !== -1 && data.indexOf('#udp') !== -1) {
+                result = data.replace(ipTCP, "");
+                result = result.replace(ipUDP , '');
             } else {
-                result = data.replace(ipReplace, '#no');
+                result = data.replace(ipTCP, '#tcp');
+                result = result.replace(ipUDP, '#udp');
             }
         } else { /** Add ip server **/
-            result = data.replace(/#no/g , ipReplace + '\n #no');
+            result = data.replace(/#udp/g , ipTCP + '\n #udp');
+            result = result.replace(/#tcp/g , ipUDP + '\n #tcp');
         }
         fs.writeFile(fileHost, result, 'utf8', function (err) {
             if (err) return console.log(err);
