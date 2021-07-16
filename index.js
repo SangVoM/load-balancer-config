@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const port = "8000";
-const host = "127.0.0.1";
+const host = "0.0.0.0";
 
 const shell = require('shelljs');
 /**
