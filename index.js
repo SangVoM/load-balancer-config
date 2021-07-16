@@ -31,12 +31,15 @@ app.post("/", (req, res) => {
                 result = data.replace(ipTCP, '#tcp');
                 result = result.replace(ipUDP, '#udp');
             }
+            console.log('delete IP:', ipTCP, ipUDP)
         } else { /** Add ip server **/
             result = data.replace(/#udp/g , ipTCP + '\n #udp');
             result = result.replace(/#tcp/g , ipUDP + '\n #tcp');
+            console.log('add IP: ', ipUDP, ipTCP)
         }
         fs.writeFile(fileHost, result, 'utf8', function (err) {
             if (err) return console.log(err);
+            console.log('start reload nginx')
             shell.exec("sudo /etc/init.d/nginx reload")
         });
     });
