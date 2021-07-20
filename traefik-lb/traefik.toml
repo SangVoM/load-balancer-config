@@ -1,0 +1,21 @@
+
+defaultEntryPoints = ["http"]
+
+# enable dashboars
+[api]
+dashboard = true
+insecure  = true
+
+# create entrypoint
+[entrypoints]
+[entrypoints.http]
+address = ":3005"
+
+[entryPoints]
+[entryPoints.streaming]
+address = ":60246/udp"
+
+# user file provider
+[providers]
+[providers.file]
+filename = "traefik-dynamic.toml"

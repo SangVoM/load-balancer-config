@@ -1,0 +1,29 @@
+[http]
+# create router for http
+[http.routers.my-routers]
+entryPoints = ["http"]
+service = "service-http"
+rule = "PathPrefix(`/`)"
+
+# create load balancer for service-http
+[http.services]
+[http.services.service-http.loadBalancer]
+[[http.services.service-http.loadBalancer.servers]]
+url = "http://59.106.232.150"
+[[http.services.service-http.loadBalancer.servers]]
+url = "http://59.106.232.143"
+
+[udp]
+# create router for udp
+[udp.routers]
+[udp.routers.service-udp]
+entryPoints = ["streaming"]
+service = "service-udp"
+
+# create load balancer for service-udp
+[udp.services]
+[udp.services.service-udp.loadBalancer]
+[[udp.services.service-udp.loadBalancer.servers]]
+address = "59.106.232.150:60246"
+[[udp.services.service-udp.loadBalancer.servers]]
+address = "59.106.232.143:60246"
