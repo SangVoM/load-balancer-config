@@ -10,9 +10,8 @@ rule = "PathPrefix(`/`)"
 [http.services.service-http.loadBalancer]
 [[http.services.service-http.loadBalancer.servers]]
 url = "http://59.106.232.150"
-[[http.services.service-http.loadBalancer.servers]]
-url = "http://59.106.232.143"
 
+#tcp
 [udp]
 # create router for udp
 [udp.routers]
@@ -25,5 +24,5 @@ service = "service-udp"
 [udp.services.service-udp.loadBalancer]
 [[udp.services.service-udp.loadBalancer.servers]]
 address = "59.106.232.150:60246"
-[[udp.services.service-udp.loadBalancer.servers]]
-address = "59.106.232.143:60246"
+
+#udp

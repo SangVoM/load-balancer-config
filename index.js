@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post("/", (req, res) => {
     const { IP, flag } = req.body;
-    const fileHost = './host.txt'
+    const fileHost = './traefik-lb/traefik-dynamic.toml'
     const ipTCP = `[[http.services.service-http.loadBalancer.servers]]\nurl = "http://${IP}"`
     const ipUDP = `[[udp.services.service-udp.loadBalancer.servers]]\naddress = "${IP}:60246"`
     let result = null
