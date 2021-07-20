@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const port = "8000";
-const host = "0.0.0.0";
+const host = "127.0.0.1";
 
 const shell = require('shelljs');
 /**
@@ -15,9 +15,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post("/", (req, res) => {
     const { IP, flag } = req.body;
-    const fileHost = '/etc/nginx/conf.d/default.conf'
-    const ipTCP = `server ${IP}:3005;`
-    const ipUDP = `server ${IP}:60246;`
+    const fileHost = './host.txt'
+    const ipTCP = `[[http.services.service-http.loadBalancer.servers]]\nurl = "http://${IP}"`
+    const ipUDP = `[[udp.services.service-udp.loadBalancer.servers]]\naddress = "${IP}:60246"`
     let result = null
 
     fs.readFile(fileHost, 'utf8', function (err,data) {
@@ -33,17 +33,17 @@ app.post("/", (req, res) => {
             }
             console.log('delete IP:', ipTCP, ipUDP)
         } else { /** Add ip server **/
-            result = data.replace(/#udp/g , ipTCP + '\n #udp');
-            result = result.replace(/#tcp/g , ipUDP + '\n #tcp');
+            result = data.replace(/#udp/g ,ipUDP + '\n#udp');
+            result = result.replace(/#tcp/g ,ipTCP + '\n#tcp');
             console.log('add IP: ', ipUDP, ipTCP)
         }
+        console.log('result: ', result)
         fs.writeFile(fileHost, result, 'utf8', function (err) {
             if (err) return console.log(err);
-            console.log('start reload nginx')
-            shell.exec("sudo /etc/init.d/nginx reload")
+            console.log('Change file traefik.toml success')
         });
     });
-    res.status(200).send("SET HOST success");
+    res.status(200).send("Set traefik success");
 });
 
 /**
