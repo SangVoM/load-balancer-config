@@ -1,4 +1,4 @@
-# MHR load-balancer
+# load-balancer
 
 ```shell
 cd /traefik-lb
